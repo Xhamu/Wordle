@@ -248,7 +248,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         estadojPanel.setLayout(new java.awt.GridLayout(3, 1));
 
-        maljPanel.setLayout(new java.awt.GridLayout());
+        maljPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         maljLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         maljLabel.setForeground(new java.awt.Color(204, 0, 0));
@@ -257,7 +257,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         estadojPanel.add(maljPanel);
 
-        existenjPanel.setLayout(new java.awt.GridLayout());
+        existenjPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         existenjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         existenjLabel.setForeground(new java.awt.Color(204, 153, 0));
@@ -265,7 +265,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         estadojPanel.add(existenjPanel);
 
-        bienjPanel.setLayout(new java.awt.GridLayout());
+        bienjPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         bienjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         bienjLabel.setForeground(new java.awt.Color(51, 102, 0));
@@ -310,7 +310,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         errorjPanel.setLayout(new java.awt.GridBagLayout());
 
-        errorjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        errorjLabel.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         errorjLabel.setForeground(new java.awt.Color(204, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -327,11 +327,11 @@ public class MainJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
         );
 
         pack();
