@@ -87,6 +87,8 @@ public class MainJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DAW1 Wordle SamuelR");
 
+        mainjPanel.setMinimumSize(new java.awt.Dimension(415, 450));
+        mainjPanel.setPreferredSize(new java.awt.Dimension(415, 450));
         mainjPanel.setLayout(new java.awt.BorderLayout());
 
         letrasjPanel.setLayout(new java.awt.GridLayout(6, 5));
@@ -275,7 +277,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         bottomjPanel1.add(estadojPanel);
 
-        palabrajTextField.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         palabrajTextField.setPreferredSize(new java.awt.Dimension(120, 22));
         palabrajTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -284,7 +285,6 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         inputjPanel.add(palabrajTextField);
 
-        enviarjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         enviarjButton.setText("Enviar");
         enviarjButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -310,7 +310,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         errorjPanel.setLayout(new java.awt.GridBagLayout());
 
-        errorjLabel.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         errorjLabel.setForeground(new java.awt.Color(204, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -327,11 +326,11 @@ public class MainJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
