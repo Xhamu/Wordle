@@ -18,7 +18,7 @@ public class MotorTester implements IMotor{
 
     @Override
     public String getPalabraAleatoria() {
-        return "SAMUE";
+        return "CICLO";
     }
     
 }
