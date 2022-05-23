@@ -13,5 +13,6 @@ public interface IMotor {
     
     public boolean isPalabraInDiccionario(String s);
     public String getPalabraAleatoria();
+    public int checkChar(int pos, String palabraRandom, String palabraInsertada);
     
 }

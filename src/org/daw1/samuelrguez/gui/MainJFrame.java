@@ -49,7 +49,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private void enviarletrasComprobarYColorear() {
         int contadorAcertadas = 0;
         String s = this.palabrajTextField.getText().toLowerCase();
-
+        
         if (s.length() == PALABRA_LENGTH) {
             setErrorFalse();
             Color ponerColorPalabra;
