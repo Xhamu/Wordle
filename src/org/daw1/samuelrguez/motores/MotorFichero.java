@@ -74,7 +74,7 @@ public class MotorFichero implements IMotor {
     }
 
     @Override
-    public int checkChar(int pos, String palabraRandom, String palabraInsertada) {
+    public int comprobarCaracter(int pos, String palabraRandom, String palabraInsertada) {
         char l = palabraInsertada.charAt(pos);
         if (palabraRandom.contains(l + "")) {
             if (palabraRandom.charAt(pos) == l) {

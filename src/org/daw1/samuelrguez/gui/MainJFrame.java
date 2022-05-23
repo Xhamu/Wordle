@@ -5,11 +5,14 @@
  */
 package org.daw1.samuelrguez.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.file.Path;
 import javax.swing.JLabel;
-import org.daw1.samuelrguez.motores.IMotor;
+import org.daw1.samuelrguez.motores.*;
 
 /**
  *
@@ -25,15 +28,15 @@ public class MainJFrame extends javax.swing.JFrame {
     private static final int PALABRA_LENGTH = 5;
     private static final String TEXTOVACIO = "";
 
-    private static java.util.Set<String> letrasVerdes = new java.util.TreeSet<>();
-    private static java.util.Set<String> letrasAmarillas = new java.util.TreeSet<>();
-    private static java.util.Set<String> letrasRojas = new java.util.TreeSet<>();
+    private static final java.util.Set<String> letrasVerdes = new java.util.TreeSet<>();
+    private static final java.util.Set<String> letrasAmarillas = new java.util.TreeSet<>();
+    private static final java.util.Set<String> letrasRojas = new java.util.TreeSet<>();
 
     private static File FICHERO = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
 
-    private final JLabel[][] matrizLabels = new javax.swing.JLabel[INTENTOS_MAXIMOS][PALABRA_LENGTH];
+    private final JLabel[][] matrizDeLabels = new JLabel[INTENTOS_MAXIMOS][PALABRA_LENGTH];
 
-    private static IMotor gestorFichero;
+    private static IMotor gf;
 
     private static int MAXIMO_INTENTOS_PARTIDA;
     private String palabraRandom;
@@ -43,93 +46,53 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         initComponents();
+        ponerLabelsEnMatriz();
+        setLabelsBlank();
         MAXIMO_INTENTOS_PARTIDA = 0;
     }
-
-    private void enviarletrasComprobarYColorear() {
-        int contadorAcertadas = 0;
-        String s = this.palabrajTextField.getText().toLowerCase();
-        
-        if (s.length() == PALABRA_LENGTH) {
-            setErrorFalse();
-            Color ponerColorPalabra;
-            for (int i = 0; i < PALABRA_LENGTH; i++) {
-                int printColor = gestorFichero.checkChar(i, palabraRandom, s);
-                String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
-                String verde;
-                String amarillo;
-                String rojo;
-                if (printColor == 1) {
-                    ponerColorPalabra = COLOR_VERDE;
-                    contadorAcertadas++;
-                    letrasVerdes.add(insertLetra);
-
-                    if (letrasAmarillas.contains(insertLetra)) {
-                        letrasAmarillas.remove(insertLetra);
-                        amarillo = cleanLlavesSet(letrasAmarillas.toString());
-                        this.existenjLabel.setText(amarillo);
-                    }
-                    verde = cleanLlavesSet(letrasVerdes.toString());
-                    this.bienjLabel.setText(verde);
-                } else if (printColor == 0) {
-                    ponerColorPalabra = COLOR_AMARILLO;
-                    if (!letrasVerdes.contains(insertLetra)) {
-                        letrasAmarillas.add(insertLetra);
-                    }
-                    amarillo = cleanLlavesSet(letrasAmarillas.toString());
-                    this.existenjLabel.setText(amarillo);
-                } else {
-                    ponerColorPalabra = COLOR_ROJO;
-                    letrasRojas.add(insertLetra);
-                    rojo = cleanLlavesSet(letrasRojas.toString());
-                    this.maljLabel.setText(rojo);
-                }
-                setLetraColor(MAXIMO_INTENTOS_PARTIDA, i, ponerColorPalabra, insertLetra);
-            }
-            
-            MAXIMO_INTENTOS_PARTIDA++;
-            if (contadorAcertadas == PALABRA_LENGTH) {
-                this.palabrajTextField.setEnabled(false);
-                this.finaljLabel.setForeground(COLOR_VERDE);
-                this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en \n" + MAXIMO_INTENTOS_PARTIDA + " intentos");
-
-            } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
-                this.palabrajTextField.setEnabled(false);
-                this.finaljLabel.setForeground(COLOR_ROJO);
-                this.finaljLabel.setText("No has acertado la palabra: " + palabraRandom.toUpperCase());
-            }
-        } else {
-            setErrorTrue();
-        }
-    }
-
-    private void setErrorFalse() {
-        this.errorjPanel.setVisible(false);
-        this.errorjLabel.setVisible(false);
-        this.errorjLabel.setText(TEXTOVACIO);
-        this.palabrajTextField.setText(TEXTOVACIO);
-    }
-
+    
     public void setLetraColor(int f, int pos, Color c, String letra) {
-        JLabel[] filaDeLabels = matrizLabels[f];
+        JLabel[] filaDeLabels = matrizDeLabels[f];
         JLabel jLabel = filaDeLabels[pos];
         jLabel.setForeground(c);
         jLabel.setText(letra);
         jLabel.setVisible(true);
     }
 
-    private void setErrorTrue() {
-        this.errorjPanel.setVisible(true);
-        this.errorjLabel.setVisible(true);
-        this.errorjLabel.setText("No se admiten palabras con longitud diferente a 5 letras.");
-        this.palabrajTextField.setText(TEXTOVACIO);
+    
+    public void setInvisibleLabels() {
+        for (int i = 0; i < matrizDeLabels.length; i++) {
+            JLabel[] filaDeLabels = matrizDeLabels[i];
+            for (int j = 0; j < filaDeLabels.length; j++) {
+                JLabel label = filaDeLabels[j];
+                label.setVisible(false);
+            }
+        }
     }
 
-    private String cleanLlavesSet(String s) {
-        StringBuilder sb = new StringBuilder(s);
-        sb = sb.delete(0, 1);
-        sb = sb.delete(sb.length() - 1, sb.length());
-        return sb.toString();
+    public void setLabelsBlank() {
+        for (int i = 0; i < matrizDeLabels.length; i++) {
+            JLabel[] filaDeLabels = matrizDeLabels[i];
+            for (int j = 0; j < filaDeLabels.length; j++) {
+                JLabel label = filaDeLabels[j];
+                label.setVisible(false);
+                label.setText(TEXTOVACIO);
+            }
+        }
+    }
+    
+    public final void ponerLabelsEnMatriz() {
+        for (int i = 1; i <= INTENTOS_MAXIMOS; i++) {
+            for (int j = 1; j <= PALABRA_LENGTH; j++) {
+                try {
+                    String s = "jLabel" + i + "_" + j;
+                    JLabel label = (javax.swing.JLabel) this.getClass().getDeclaredField(s).get(this);
+                    matrizDeLabels[i - 1][j - 1] = label;
+                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+                    Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 
     /**
@@ -450,9 +413,88 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_enviarjButtonActionPerformed
 
     private void palabrajTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_palabrajTextFieldActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_palabrajTextFieldActionPerformed
 
+    private void enviarletrasComprobarYColorear() {
+        int contadorAcertadas = 0;
+        String s = this.palabrajTextField.getText().toLowerCase();
+
+        if (s.length() == PALABRA_LENGTH) {
+            setErrorFalse();
+            Color ponerColorPalabra;
+            for (int i = 0; i < PALABRA_LENGTH; i++) {
+                int insertColor = gf.comprobarCaracter(i, palabraRandom, s);
+                String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
+                String rojo;
+                String amarillo;
+                String verde;
+                if (insertColor == 1) {
+                    ponerColorPalabra = COLOR_VERDE;
+                    contadorAcertadas++;
+                    letrasVerdes.add(insertLetra);
+
+                    if (letrasAmarillas.contains(insertLetra)) {
+                        letrasAmarillas.remove(insertLetra);
+                        amarillo = cleanLlavesSet(letrasAmarillas.toString());
+                        this.existenjLabel.setText(amarillo);
+                    }
+                    verde = cleanLlavesSet(letrasVerdes.toString());
+                    this.bienjLabel.setText(verde);
+                } else if (insertColor == 0) {
+                    ponerColorPalabra = COLOR_AMARILLO;
+                    if (!letrasVerdes.contains(insertLetra)) {
+                        letrasAmarillas.add(insertLetra);
+                    }
+                    amarillo = cleanLlavesSet(letrasAmarillas.toString());
+                    this.existenjLabel.setText(amarillo);
+                } else {
+                    ponerColorPalabra = COLOR_ROJO;
+                    letrasRojas.add(insertLetra);
+                    rojo = cleanLlavesSet(letrasRojas.toString());
+                    this.maljLabel.setText(rojo);
+                }
+                setLetraColor(MAXIMO_INTENTOS_PARTIDA, i, ponerColorPalabra, insertLetra);
+            }
+
+            MAXIMO_INTENTOS_PARTIDA++;
+            if (contadorAcertadas == PALABRA_LENGTH) {
+                this.palabrajTextField.setEnabled(false);
+                this.finaljLabel.setForeground(COLOR_VERDE);
+                this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en \n" + MAXIMO_INTENTOS_PARTIDA + " intentos");
+
+            } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
+                this.palabrajTextField.setEnabled(false);
+                this.finaljLabel.setForeground(COLOR_ROJO);
+                this.finaljLabel.setText("No has acertado la palabra: " + palabraRandom.toUpperCase());
+            }
+        } else {
+            setErrorTrue();
+        }
+    }
+    
+    public void setErrorFalse() {
+        this.errorjPanel.setVisible(false);
+        this.errorjLabel.setVisible(false);
+        this.errorjLabel.setText(TEXTOVACIO);
+        this.palabrajTextField.setText(TEXTOVACIO);
+    }
+
+
+    public void setErrorTrue() {
+        this.errorjPanel.setVisible(true);
+        this.errorjLabel.setVisible(true);
+        this.errorjLabel.setText("No se admiten palabras con longitud diferente a 5 letras.");
+        this.palabrajTextField.setText(TEXTOVACIO);
+    }
+
+    public String cleanLlavesSet(String s) {
+        StringBuilder sb = new StringBuilder(s);
+        sb = sb.delete(0, 1);
+        sb = sb.delete(sb.length() - 1, sb.length());
+        return sb.toString();
+    }
+    
     /**
      * @param args the command line arguments
      */
