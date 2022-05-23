@@ -54,7 +54,7 @@ public class MainJFrame extends javax.swing.JFrame {
             setErrorFalse();
             Color ponerColorPalabra;
             for (int i = 0; i < PALABRA_LENGTH; i++) {
-                int printColor = gestorFichero.comprobarCaracter(i, palabraRandom, s);
+                int printColor = gestorFichero.checkChar(i, palabraRandom, s);
                 String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
                 String verde;
                 String amarillo;
@@ -110,10 +110,10 @@ public class MainJFrame extends javax.swing.JFrame {
         this.palabrajTextField.setText(TEXTOVACIO);
     }
 
-    public void setLetraColor(int fila, int pos, Color color, String letra) {
-        JLabel[] filaDeLabels = matrizLabels[fila];
+    public void setLetraColor(int f, int pos, Color c, String letra) {
+        JLabel[] filaDeLabels = matrizLabels[f];
         JLabel jLabel = filaDeLabels[pos];
-        jLabel.setForeground(color);
+        jLabel.setForeground(c);
         jLabel.setText(letra);
         jLabel.setVisible(true);
     }
