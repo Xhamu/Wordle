@@ -5,6 +5,9 @@
  */
 package org.daw1.samuelrguez.motores;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 /**
  *
  * @author 34609
@@ -22,16 +25,26 @@ public class MotorTester implements IMotor{
     }
 
     @Override
-    public int comprobarCaracter(int pos, String palabraRandom, String palabraInsertada) {
-        char l = palabraInsertada.charAt(pos);
-        if (palabraRandom.contains(l + "")) {
-            if (palabraInsertada.charAt(pos) == l) {
+    public int checkChar(int pos, String random, String insertada) {
+        char l = insertada.charAt(pos);
+        if (random.contains(l + "")) {
+            if (insertada.charAt(pos) == l) {
                 return 1;
             }
             return 0;
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public boolean addPalabra(String s) throws IOException, SQLException {
+        return true;
+    }
+
+    @Override
+    public boolean removePalabra(String s) throws SQLException {
+        return true;
     }
     
 }

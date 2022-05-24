@@ -11,7 +11,9 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import org.daw1.samuelrguez.motores.*;
 
 /**
@@ -24,22 +26,18 @@ public class MainJFrame extends javax.swing.JFrame {
     private static final java.awt.Color COLOR_AMARILLO = new java.awt.Color(204, 153, 0);
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51, 102, 0);
 
-    private static final int INTENTOS_MAXIMOS = 6;
-    private static final int PALABRA_LENGTH = 5;
-    private static final String TEXTOVACIO = "";
-
     private static final java.util.Set<String> letrasVerdes = new java.util.TreeSet<>();
     private static final java.util.Set<String> letrasAmarillas = new java.util.TreeSet<>();
     private static final java.util.Set<String> letrasRojas = new java.util.TreeSet<>();
 
-    private static File FICHERO = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
-
-    private final JLabel[][] matrizDeLabels = new JLabel[INTENTOS_MAXIMOS][PALABRA_LENGTH];
-
-    private static IMotor gf;
-
+    private static final int MAX_INTENTOS = 6;
+    private static final int TAMANO_PALABRA = 5;
+    private static final String TEXTOVACIO = "";
     private static int MAXIMO_INTENTOS_PARTIDA;
     private String palabraRandom;
+    private final JLabel[][] matrizDeLabels = new JLabel[MAX_INTENTOS][TAMANO_PALABRA];
+    private static IMotor gestorFichero;
+    private static File FICHERO = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
 
     /**
      * Creates new form InterfazWordle
@@ -47,10 +45,16 @@ public class MainJFrame extends javax.swing.JFrame {
     public MainJFrame() {
         initComponents();
         ponerLabelsEnMatriz();
-        setLabelsBlank();
+        setInvisibleLabels();
         MAXIMO_INTENTOS_PARTIDA = 0;
+        /*try {
+            palabraRandom = gestorFichero.getPalabraAleatoria();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+         */
     }
-    
+
     public void setLetraColor(int f, int pos, Color c, String letra) {
         JLabel[] filaDeLabels = matrizDeLabels[f];
         JLabel jLabel = filaDeLabels[pos];
@@ -59,8 +63,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel.setVisible(true);
     }
 
-    
-    public void setInvisibleLabels() {
+    private void setInvisibleLabels() {
         for (int i = 0; i < matrizDeLabels.length; i++) {
             JLabel[] filaDeLabels = matrizDeLabels[i];
             for (int j = 0; j < filaDeLabels.length; j++) {
@@ -70,7 +73,7 @@ public class MainJFrame extends javax.swing.JFrame {
         }
     }
 
-    public void setLabelsBlank() {
+    private void setLabelsBlank() {
         for (int i = 0; i < matrizDeLabels.length; i++) {
             JLabel[] filaDeLabels = matrizDeLabels[i];
             for (int j = 0; j < filaDeLabels.length; j++) {
@@ -80,10 +83,10 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         }
     }
-    
+
     public final void ponerLabelsEnMatriz() {
-        for (int i = 1; i <= INTENTOS_MAXIMOS; i++) {
-            for (int j = 1; j <= PALABRA_LENGTH; j++) {
+        for (int i = 1; i <= MAX_INTENTOS; i++) {
+            for (int j = 1; j <= TAMANO_PALABRA; j++) {
                 try {
                     String s = "jLabel" + i + "_" + j;
                     JLabel label = (javax.swing.JLabel) this.getClass().getDeclaredField(s).get(this);
@@ -153,16 +156,25 @@ public class MainJFrame extends javax.swing.JFrame {
         finaljLabel = new javax.swing.JLabel();
         errorjPanel = new javax.swing.JPanel();
         errorjLabel = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        archivojMenu = new javax.swing.JMenu();
+        motoresjMenu = new javax.swing.JMenu();
+        testjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        filejRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        esBBDDjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        glBBDDjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
 
         jLabel2.setText("jLabel2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DAW1 Wordle SamuelR");
 
+        mainjPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainjPanel.setMinimumSize(new java.awt.Dimension(415, 450));
         mainjPanel.setPreferredSize(new java.awt.Dimension(415, 450));
         mainjPanel.setLayout(new java.awt.BorderLayout());
 
+        letrasjPanel.setBackground(new java.awt.Color(255, 255, 255));
         letrasjPanel.setLayout(new java.awt.GridLayout(6, 5));
 
         jLabel1_1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
@@ -317,11 +329,15 @@ public class MainJFrame extends javax.swing.JFrame {
 
         mainjPanel.add(letrasjPanel, java.awt.BorderLayout.CENTER);
 
+        bottomjPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        bottomjPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
         bottomjPanel1.setPreferredSize(new java.awt.Dimension(200, 100));
         bottomjPanel1.setLayout(new java.awt.GridLayout(2, 2));
 
+        estadojPanel.setBackground(new java.awt.Color(255, 255, 255));
         estadojPanel.setLayout(new java.awt.GridLayout(3, 1));
 
+        maljPanel.setBackground(new java.awt.Color(255, 255, 255));
         maljPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         maljLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -331,6 +347,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         estadojPanel.add(maljPanel);
 
+        existenjPanel.setBackground(new java.awt.Color(255, 255, 255));
         existenjPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         existenjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -339,6 +356,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         estadojPanel.add(existenjPanel);
 
+        bienjPanel.setBackground(new java.awt.Color(255, 255, 255));
         bienjPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         bienjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -348,6 +366,8 @@ public class MainJFrame extends javax.swing.JFrame {
         estadojPanel.add(bienjPanel);
 
         bottomjPanel1.add(estadojPanel);
+
+        inputjPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         palabrajTextField.setPreferredSize(new java.awt.Dimension(120, 22));
         palabrajTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -367,6 +387,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         bottomjPanel1.add(inputjPanel);
 
+        exitojPanel.setBackground(new java.awt.Color(255, 255, 255));
         exitojPanel.setLayout(new java.awt.GridBagLayout());
 
         finaljLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -380,6 +401,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         bottomjPanel1.add(exitojPanel);
 
+        errorjPanel.setBackground(new java.awt.Color(255, 255, 255));
         errorjPanel.setLayout(new java.awt.GridBagLayout());
 
         errorjLabel.setForeground(new java.awt.Color(204, 0, 0));
@@ -393,6 +415,39 @@ public class MainJFrame extends javax.swing.JFrame {
         bottomjPanel1.add(errorjPanel);
 
         mainjPanel.add(bottomjPanel1, java.awt.BorderLayout.PAGE_END);
+
+        archivojMenu.setText("Archivo");
+        archivojMenu.setFocusable(false);
+        archivojMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jMenuBar1.add(archivojMenu);
+
+        motoresjMenu.setText("Motores");
+        motoresjMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+
+        testjRadioButtonMenuItem.setSelected(true);
+        testjRadioButtonMenuItem.setText("Motor de test");
+        testjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                testjRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        motoresjMenu.add(testjRadioButtonMenuItem);
+
+        filejRadioButtonMenuItem.setSelected(true);
+        filejRadioButtonMenuItem.setText("Motor de fichero");
+        motoresjMenu.add(filejRadioButtonMenuItem);
+
+        esBBDDjRadioButtonMenuItem.setSelected(true);
+        esBBDDjRadioButtonMenuItem.setText("Motor de BBDD ES");
+        motoresjMenu.add(esBBDDjRadioButtonMenuItem);
+
+        glBBDDjRadioButtonMenuItem.setSelected(true);
+        glBBDDjRadioButtonMenuItem.setText("Motor de BBDD GL");
+        motoresjMenu.add(glBBDDjRadioButtonMenuItem);
+
+        jMenuBar1.add(motoresjMenu);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -413,18 +468,30 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_enviarjButtonActionPerformed
 
     private void palabrajTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_palabrajTextFieldActionPerformed
-        
+
     }//GEN-LAST:event_palabrajTextFieldActionPerformed
+
+    private void testjRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testjRadioButtonMenuItemActionPerformed
+        seleccionarMotor();
+    }//GEN-LAST:event_testjRadioButtonMenuItemActionPerformed
+
+    private void seleccionarMotor() {
+        if (this.filejRadioButtonMenuItem.isSelected()) {
+            gestorFichero = new MotorTester();
+        } else if (this.filejRadioButtonMenuItem.isSelected()) {
+            gestorFichero = new MotorFichero(FICHERO);
+        }
+    }
 
     private void enviarletrasComprobarYColorear() {
         int contadorAcertadas = 0;
         String s = this.palabrajTextField.getText().toLowerCase();
 
-        if (s.length() == PALABRA_LENGTH) {
+        if (s.length() == TAMANO_PALABRA) {
             setErrorFalse();
             Color ponerColorPalabra;
-            for (int i = 0; i < PALABRA_LENGTH; i++) {
-                int insertColor = gf.comprobarCaracter(i, palabraRandom, s);
+            for (int i = 0; i < TAMANO_PALABRA; i++) {
+                int insertColor = gestorFichero.checkChar(i, palabraRandom, s);
                 String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
                 String rojo;
                 String amarillo;
@@ -458,7 +525,7 @@ public class MainJFrame extends javax.swing.JFrame {
             }
 
             MAXIMO_INTENTOS_PARTIDA++;
-            if (contadorAcertadas == PALABRA_LENGTH) {
+            if (contadorAcertadas == TAMANO_PALABRA) {
                 this.palabrajTextField.setEnabled(false);
                 this.finaljLabel.setForeground(COLOR_VERDE);
                 this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en \n" + MAXIMO_INTENTOS_PARTIDA + " intentos");
@@ -472,14 +539,13 @@ public class MainJFrame extends javax.swing.JFrame {
             setErrorTrue();
         }
     }
-    
+
     public void setErrorFalse() {
         this.errorjPanel.setVisible(false);
         this.errorjLabel.setVisible(false);
         this.errorjLabel.setText(TEXTOVACIO);
         this.palabrajTextField.setText(TEXTOVACIO);
     }
-
 
     public void setErrorTrue() {
         this.errorjPanel.setVisible(true);
@@ -494,7 +560,7 @@ public class MainJFrame extends javax.swing.JFrame {
         sb = sb.delete(sb.length() - 1, sb.length());
         return sb.toString();
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -532,17 +598,21 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu archivojMenu;
     private javax.swing.JLabel bienjLabel;
     private javax.swing.JPanel bienjPanel;
     private javax.swing.JPanel bottomjPanel1;
     private javax.swing.JButton enviarjButton;
     private javax.swing.JLabel errorjLabel;
     private javax.swing.JPanel errorjPanel;
+    private javax.swing.JRadioButtonMenuItem esBBDDjRadioButtonMenuItem;
     private javax.swing.JPanel estadojPanel;
     private javax.swing.JLabel existenjLabel;
     private javax.swing.JPanel existenjPanel;
     private javax.swing.JPanel exitojPanel;
+    private javax.swing.JRadioButtonMenuItem filejRadioButtonMenuItem;
     private javax.swing.JLabel finaljLabel;
+    private javax.swing.JRadioButtonMenuItem glBBDDjRadioButtonMenuItem;
     private javax.swing.JPanel inputjPanel;
     private javax.swing.JLabel jLabel1_1;
     private javax.swing.JLabel jLabel1_2;
@@ -575,10 +645,13 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6_3;
     private javax.swing.JLabel jLabel6_4;
     private javax.swing.JLabel jLabel6_5;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel letrasjPanel;
     private javax.swing.JPanel mainjPanel;
     private javax.swing.JLabel maljLabel;
     private javax.swing.JPanel maljPanel;
+    private javax.swing.JMenu motoresjMenu;
     private javax.swing.JTextField palabrajTextField;
+    private javax.swing.JRadioButtonMenuItem testjRadioButtonMenuItem;
     // End of variables declaration//GEN-END:variables
 }

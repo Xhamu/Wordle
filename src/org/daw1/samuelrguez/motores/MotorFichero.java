@@ -5,14 +5,20 @@
  */
 package org.daw1.samuelrguez.motores;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.Writer;
+import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -20,14 +26,60 @@ import java.util.Set;
  */
 public class MotorFichero implements IMotor {
 
-    public static String ruta = Path.of(".") + File.separator + "data" + File.separator + "diccionario.dat";
-    public static File FICHERO = new File(ruta);
-    private static Set<String> diccionario;
+    public static File FICHERO;
+    private static Set<String> diccionario = new TreeSet<>();
 
-    public MotorFichero() {
-        crearFile();
+    public MotorFichero(File f) {
+        FICHERO = f;
+        setPalabrasFicheroEnDiccionario();
     }
-    
+
+    private boolean setPalabrasFicheroEnDiccionario() {
+        try (BufferedReader br = new BufferedReader(new FileReader(FICHERO))) {
+            String line = br.readLine();
+            while (line != null) {
+                diccionario.add(line);
+                line = br.readLine();
+            }
+            return true;
+        } catch (FileNotFoundException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+        return false;
+    }
+
+    private boolean setPalabraDiccionarioEnFichero() {
+        if (!FICHERO.exists()) {
+            crearFile();
+        }
+        try (Writer wr = new BufferedWriter(new FileWriter(FICHERO))) {
+            wr.write("");
+        } catch (IOException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+        try (Writer wr = new BufferedWriter(new FileWriter(FICHERO, true))) {
+            StringBuilder sb = new StringBuilder();
+            Iterator it = diccionario.iterator();
+
+            while (it.hasNext()) {
+
+                String aux = (String) it.next();
+
+                sb.append(aux).append("\n");
+            }
+
+            wr.write(sb.toString());
+
+            return true;
+
+        } catch (IOException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+        return false;
+    }
+
     private boolean existsFile() {
         return FICHERO.exists();
     }
@@ -42,14 +94,58 @@ public class MotorFichero implements IMotor {
             }
         }
     }
-    
-    private boolean addPalabra(String s) {
-        if(!existsFile()) {
+
+    private boolean checkPalabra(String s) {
+        s = s.toLowerCase().trim();
+        return !s.matches("[^a-z]{5}");
+    }
+
+    @Override
+    public boolean isPalabraInDiccionario(String s) {
+        s = s.toLowerCase().trim();
+        return diccionario.contains(s.toUpperCase());
+    }
+
+    @Override
+    public String getPalabraAleatoria() throws SQLException {
+        if (!FICHERO.exists()) {
             crearFile();
         }
-        try (BufferedWriter w = new BufferedWriter(new FileWriter (FICHERO, true))) {
-            if(!isPalabraInDiccionario(s)) {
-                w.append(s.toUpperCase() + "\n");
+        String random = "";
+        java.util.Random numeroRandom = new java.util.Random();
+        Iterator it = diccionario.iterator();
+        int numeroRandomPalabra = numeroRandom.nextInt(diccionario.size());
+        int cont = 0;
+        while (cont <= numeroRandomPalabra) {
+            random = (String) it.next();
+            cont++;
+        }
+        return random;
+    }
+
+    @Override
+    public int checkChar(int pos, String random, String insertada) {
+        random = random.toLowerCase().trim();
+        insertada = insertada.toLowerCase().trim();
+        char l = insertada.charAt(pos);
+        if (random.contains(l + "")) {
+            if (random.charAt(pos) == l) {
+                return 1;
+            }
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean addPalabra(String s) throws IOException {
+        if (!existsFile()) {
+            crearFile();
+        }
+        try (BufferedWriter w = new BufferedWriter(new FileWriter(FICHERO, true))) {
+            if (!isPalabraInDiccionario(s)) {
+                w.append(s.toLowerCase() + "\n");
                 return true;
             } else {
                 return false;
@@ -61,29 +157,19 @@ public class MotorFichero implements IMotor {
     }
 
     @Override
-    public boolean isPalabraInDiccionario(String s) {
-        return diccionario.contains(s.toUpperCase());
-    }
-
-    @Override
-    public String getPalabraAleatoria() {
-        int tamano = diccionario.size();
-        int random = (int) (Math.random() * tamano);
-        String[] array = diccionario.toArray(new String[tamano]);
-        return array[random];
-    }
-
-    @Override
-    public int comprobarCaracter(int pos, String palabraRandom, String palabraInsertada) {
-        char l = palabraInsertada.charAt(pos);
-        if (palabraRandom.contains(l + "")) {
-            if (palabraRandom.charAt(pos) == l) {
-                return 1;
+    public boolean removePalabra(String s) throws SQLException {
+        s = s.toLowerCase().trim();
+        if (checkPalabra(s)) {
+            if (!FICHERO.exists()) {
+                crearFile();
             }
-            return 0;
-        } else {
-            return -1;
+            if (diccionario.contains(s)) {
+                if (diccionario.remove(s)) {
+                    setPalabraDiccionarioEnFichero();
+                    return true;
+                }
+            }
         }
+        return false;
     }
-
 }
