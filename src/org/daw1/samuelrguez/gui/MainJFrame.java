@@ -21,23 +21,24 @@ import org.daw1.samuelrguez.motores.*;
  * @author alumno
  */
 public class MainJFrame extends javax.swing.JFrame {
-
+    
     private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204, 0, 0);
     private static final java.awt.Color COLOR_AMARILLO = new java.awt.Color(204, 153, 0);
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51, 102, 0);
-
+    
     private static final java.util.Set<String> letrasVerdes = new java.util.TreeSet<>();
     private static final java.util.Set<String> letrasAmarillas = new java.util.TreeSet<>();
     private static final java.util.Set<String> letrasRojas = new java.util.TreeSet<>();
-
+    
     private static final int MAX_INTENTOS = 6;
-    private static final int TAMANO_PALABRA = 5;
+    protected static final int TAMANO_PALABRA = 5;
     private static final String TEXTOVACIO = "";
     private static int MAXIMO_INTENTOS_PARTIDA;
     private String palabraRandom;
-    private final JLabel[][] matrizDeLabels = new JLabel[MAX_INTENTOS][TAMANO_PALABRA];
+    private final JLabel[][] matriz = new JLabel[MAX_INTENTOS][TAMANO_PALABRA];
     private static IMotor gestorFichero;
     private static File FICHERO = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
+    private static File FILE_TEST = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
 
     /**
      * Creates new form InterfazWordle
@@ -46,36 +47,36 @@ public class MainJFrame extends javax.swing.JFrame {
         initComponents();
         ponerLabelsEnMatriz();
         setInvisibleLabels();
+        gestorFichero = new MotorFichero(FICHERO);
         MAXIMO_INTENTOS_PARTIDA = 0;
-        /*try {
+        try {
             palabraRandom = gestorFichero.getPalabraAleatoria();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, "ERROR: " + ex.getMessage());
         }
-         */
     }
-
-    public void setLetraColor(int f, int pos, Color c, String letra) {
-        JLabel[] filaDeLabels = matrizDeLabels[f];
+    
+    public void setLetraColor(int fila, int pos, Color c, String letra) {
+        JLabel[] filaDeLabels = matriz[fila];
         JLabel jLabel = filaDeLabels[pos];
         jLabel.setForeground(c);
         jLabel.setText(letra);
         jLabel.setVisible(true);
     }
-
+    
     private void setInvisibleLabels() {
-        for (int i = 0; i < matrizDeLabels.length; i++) {
-            JLabel[] filaDeLabels = matrizDeLabels[i];
+        for (int i = 0; i < matriz.length; i++) {
+            JLabel[] filaDeLabels = matriz[i];
             for (int j = 0; j < filaDeLabels.length; j++) {
                 JLabel label = filaDeLabels[j];
                 label.setVisible(false);
             }
         }
     }
-
+    
     private void setLabelsBlank() {
-        for (int i = 0; i < matrizDeLabels.length; i++) {
-            JLabel[] filaDeLabels = matrizDeLabels[i];
+        for (int i = 0; i < matriz.length; i++) {
+            JLabel[] filaDeLabels = matriz[i];
             for (int j = 0; j < filaDeLabels.length; j++) {
                 JLabel label = filaDeLabels[j];
                 label.setVisible(false);
@@ -83,14 +84,14 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         }
     }
-
+    
     public final void ponerLabelsEnMatriz() {
         for (int i = 1; i <= MAX_INTENTOS; i++) {
             for (int j = 1; j <= TAMANO_PALABRA; j++) {
                 try {
                     String s = "jLabel" + i + "_" + j;
                     JLabel label = (javax.swing.JLabel) this.getClass().getDeclaredField(s).get(this);
-                    matrizDeLabels[i - 1][j - 1] = label;
+                    matriz[i - 1][j - 1] = label;
                 } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                     Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -164,11 +165,14 @@ public class MainJFrame extends javax.swing.JFrame {
         filejRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         esBBDDjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         glBBDDjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        gestionMotorjMenuItem = new javax.swing.JMenuItem();
 
         jLabel2.setText("jLabel2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DAW1 Wordle SamuelR");
+        setResizable(false);
 
         mainjPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainjPanel.setMinimumSize(new java.awt.Dimension(415, 450));
@@ -377,6 +381,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 palabrajTextFieldActionPerformed(evt);
             }
         });
+        palabrajTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                palabrajTextFieldKeyReleased(evt);
+            }
+        });
         inputjPanel.add(palabrajTextField);
 
         enviarjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
@@ -424,8 +433,13 @@ public class MainJFrame extends javax.swing.JFrame {
         archivojMenu.setFocusable(false);
         archivojMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
 
-        nuevaPartidajCheckBoxMenuItem.setSelected(true);
+        nuevaPartidajCheckBoxMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         nuevaPartidajCheckBoxMenuItem.setText("Nueva partida");
+        nuevaPartidajCheckBoxMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevaPartidajCheckBoxMenuItemActionPerformed(evt);
+            }
+        });
         archivojMenu.add(nuevaPartidajCheckBoxMenuItem);
 
         jMenuBar1.add(archivojMenu);
@@ -433,8 +447,9 @@ public class MainJFrame extends javax.swing.JFrame {
         motoresjMenu.setText("Motores");
         motoresjMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
 
-        testjRadioButtonMenuItem.setSelected(true);
+        testjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         testjRadioButtonMenuItem.setText("Motor de test");
+        testjRadioButtonMenuItem.setEnabled(false);
         testjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 testjRadioButtonMenuItemActionPerformed(evt);
@@ -442,17 +457,43 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         motoresjMenu.add(testjRadioButtonMenuItem);
 
+        filejRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         filejRadioButtonMenuItem.setSelected(true);
         filejRadioButtonMenuItem.setText("Motor de fichero");
+        filejRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filejRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
         motoresjMenu.add(filejRadioButtonMenuItem);
 
-        esBBDDjRadioButtonMenuItem.setSelected(true);
+        esBBDDjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         esBBDDjRadioButtonMenuItem.setText("Motor de BBDD (Español)");
+        esBBDDjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                esBBDDjRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
         motoresjMenu.add(esBBDDjRadioButtonMenuItem);
 
-        glBBDDjRadioButtonMenuItem.setSelected(true);
+        glBBDDjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         glBBDDjRadioButtonMenuItem.setText("Motor de BBDD (Gallego)");
+        glBBDDjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                glBBDDjRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
         motoresjMenu.add(glBBDDjRadioButtonMenuItem);
+        motoresjMenu.add(jSeparator1);
+
+        gestionMotorjMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        gestionMotorjMenuItem.setText("Administrar motor");
+        gestionMotorjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gestionMotorjMenuItemActionPerformed(evt);
+            }
+        });
+        motoresjMenu.add(gestionMotorjMenuItem);
 
         jMenuBar1.add(motoresjMenu);
 
@@ -462,11 +503,11 @@ public class MainJFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
         );
 
         pack();
@@ -481,24 +522,96 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_palabrajTextFieldActionPerformed
 
     private void testjRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testjRadioButtonMenuItemActionPerformed
-        seleccionarMotor();
+        selectMotor();
+        setNuevaPartida();
     }//GEN-LAST:event_testjRadioButtonMenuItemActionPerformed
 
-    private void seleccionarMotor() {
+    private void palabrajTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_palabrajTextFieldKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            enviarletrasComprobarYColorear();
+        }
+    }//GEN-LAST:event_palabrajTextFieldKeyReleased
+
+    private void filejRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filejRadioButtonMenuItemActionPerformed
+        selectMotor();
+        setNuevaPartida();
+        this.filejRadioButtonMenuItem.setSelected(true);
+        this.esBBDDjRadioButtonMenuItem.setSelected(false);
+        this.glBBDDjRadioButtonMenuItem.setSelected(false);
+    }//GEN-LAST:event_filejRadioButtonMenuItemActionPerformed
+
+    private void esBBDDjRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_esBBDDjRadioButtonMenuItemActionPerformed
+        selectMotor();
+        setNuevaPartida();
+        this.esBBDDjRadioButtonMenuItem.setSelected(true);
+        this.filejRadioButtonMenuItem.setSelected(false);
+        this.glBBDDjRadioButtonMenuItem.setSelected(false);
+    }//GEN-LAST:event_esBBDDjRadioButtonMenuItemActionPerformed
+
+    private void glBBDDjRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glBBDDjRadioButtonMenuItemActionPerformed
+        selectMotor();
+        setNuevaPartida();
+        this.glBBDDjRadioButtonMenuItem.setSelected(true);
+        this.filejRadioButtonMenuItem.setSelected(false);
+        this.esBBDDjRadioButtonMenuItem.setSelected(false);
+    }//GEN-LAST:event_glBBDDjRadioButtonMenuItemActionPerformed
+
+    private void nuevaPartidajCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaPartidajCheckBoxMenuItemActionPerformed
+        setNuevaPartida();
+    }//GEN-LAST:event_nuevaPartidajCheckBoxMenuItemActionPerformed
+
+    private void gestionMotorjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gestionMotorjMenuItemActionPerformed
+        GestionMotorJDialog gestionMotor = new GestionMotorJDialog(this, true, gestorFichero);
+        gestionMotor.setVisible(true);
+    }//GEN-LAST:event_gestionMotorjMenuItemActionPerformed
+    
+    private void selectMotor() {
         if (this.filejRadioButtonMenuItem.isSelected()) {
             gestorFichero = new MotorTester();
         } else if (this.filejRadioButtonMenuItem.isSelected()) {
+            FICHERO = FILE_TEST;
             gestorFichero = new MotorFichero(FICHERO);
+            this.esBBDDjRadioButtonMenuItem.setSelected(false);
+            this.glBBDDjRadioButtonMenuItem.setSelected(false);
+        } else if (this.esBBDDjRadioButtonMenuItem.isSelected()) {
+            gestorFichero = new MotorBBDD("es");
+            this.filejRadioButtonMenuItem.setSelected(false);
+            this.glBBDDjRadioButtonMenuItem.setSelected(false);
+        } else if (this.glBBDDjRadioButtonMenuItem.isSelected()) {
+            gestorFichero = new MotorBBDD("gl");
+            this.filejRadioButtonMenuItem.setSelected(false);
+            this.esBBDDjRadioButtonMenuItem.setSelected(false);
         }
     }
-
+    
+    private void setNuevaPartida() {
+        setLabelsBlank();
+        MAXIMO_INTENTOS_PARTIDA = 0;
+        try {
+            palabraRandom = gestorFichero.getPalabraAleatoria();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "ERROR: " + ex.getMessage());
+        }
+        this.palabrajTextField.setEnabled(true);
+        this.finaljLabel.setText(TEXTOVACIO);
+        this.bienjLabel.setText(TEXTOVACIO);
+        letrasVerdes.clear();
+        this.existenjLabel.setText(TEXTOVACIO);
+        letrasAmarillas.clear();
+        this.maljLabel.setText(TEXTOVACIO);
+        letrasRojas.clear();
+        
+        if (this.nuevaPartidajCheckBoxMenuItem.isSelected()) {
+            this.nuevaPartidajCheckBoxMenuItem.setSelected(false);
+        }
+    }
+    
     private void enviarletrasComprobarYColorear() {
         int contadorAcertadas = 0;
+        Color ponerColorPalabra;
         String s = this.palabrajTextField.getText().toLowerCase();
-
         if (s.length() == TAMANO_PALABRA) {
             setErrorFalse();
-            Color ponerColorPalabra;
             for (int i = 0; i < TAMANO_PALABRA; i++) {
                 int insertColor = gestorFichero.checkChar(i, palabraRandom, s);
                 String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
@@ -509,7 +622,6 @@ public class MainJFrame extends javax.swing.JFrame {
                     ponerColorPalabra = COLOR_VERDE;
                     contadorAcertadas++;
                     letrasVerdes.add(insertLetra);
-
                     if (letrasAmarillas.contains(insertLetra)) {
                         letrasAmarillas.remove(insertLetra);
                         amarillo = cleanLlavesSet(letrasAmarillas.toString());
@@ -532,13 +644,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 }
                 setLetraColor(MAXIMO_INTENTOS_PARTIDA, i, ponerColorPalabra, insertLetra);
             }
-
             MAXIMO_INTENTOS_PARTIDA++;
             if (contadorAcertadas == TAMANO_PALABRA) {
                 this.palabrajTextField.setEnabled(false);
                 this.finaljLabel.setForeground(COLOR_VERDE);
                 this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en \n" + MAXIMO_INTENTOS_PARTIDA + " intentos");
-
             } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
                 this.palabrajTextField.setEnabled(false);
                 this.finaljLabel.setForeground(COLOR_ROJO);
@@ -548,21 +658,21 @@ public class MainJFrame extends javax.swing.JFrame {
             setErrorTrue();
         }
     }
-
+    
     public void setErrorFalse() {
         this.errorjPanel.setVisible(false);
         this.errorjLabel.setVisible(false);
         this.errorjLabel.setText(TEXTOVACIO);
         this.palabrajTextField.setText(TEXTOVACIO);
     }
-
+    
     public void setErrorTrue() {
         this.errorjPanel.setVisible(true);
         this.errorjLabel.setVisible(true);
         this.errorjLabel.setText("No se admiten palabras con longitud diferente a 5 letras.");
         this.palabrajTextField.setText(TEXTOVACIO);
     }
-
+    
     public String cleanLlavesSet(String s) {
         StringBuilder sb = new StringBuilder(s);
         sb = sb.delete(0, 1);
@@ -621,6 +731,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel exitojPanel;
     private javax.swing.JRadioButtonMenuItem filejRadioButtonMenuItem;
     private javax.swing.JLabel finaljLabel;
+    private javax.swing.JMenuItem gestionMotorjMenuItem;
     private javax.swing.JRadioButtonMenuItem glBBDDjRadioButtonMenuItem;
     private javax.swing.JPanel inputjPanel;
     private javax.swing.JLabel jLabel1_1;
@@ -655,6 +766,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6_4;
     private javax.swing.JLabel jLabel6_5;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPanel letrasjPanel;
     private javax.swing.JPanel mainjPanel;
     private javax.swing.JLabel maljLabel;

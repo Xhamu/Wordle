@@ -19,8 +19,6 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
 
     private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204, 0, 0);
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51, 102, 0);
-
-    private static final int TAMANO_PALABRA = 5;
     private static IMotor gestorFichero;
 
     /**
@@ -68,7 +66,8 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
         cuerpojPanel.setLayout(new java.awt.GridLayout(2, 1));
 
         anadirjPanel.setBackground(new java.awt.Color(255, 255, 255));
-        anadirjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Alta palabra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(153, 153, 153))); // NOI18N
+        anadirjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Alta palabra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(51, 51, 51))); // NOI18N
+        anadirjPanel.setForeground(new java.awt.Color(51, 51, 51));
         anadirjPanel.setLayout(new java.awt.GridLayout(2, 1));
 
         insertarjPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -104,7 +103,8 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
         cuerpojPanel.add(anadirjPanel);
 
         borrarjPanel.setBackground(new java.awt.Color(255, 255, 255));
-        borrarjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Borrado palabra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(153, 153, 153))); // NOI18N
+        borrarjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Borrado palabra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(51, 51, 51))); // NOI18N
+        borrarjPanel.setForeground(new java.awt.Color(51, 51, 51));
         borrarjPanel.setLayout(new java.awt.GridLayout(2, 1));
 
         borradojPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -231,7 +231,7 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
         String s = this.anadirjTextField.getText().toLowerCase();
         this.estadoBorrarjLabel.setText("");
         this.anadirjTextField.setText("");
-        if (s.length() == TAMANO_PALABRA) {
+        if (s.length() == MainJFrame.TAMANO_PALABRA) {
             if (!gestorFichero.isPalabraInDiccionario(s)) {
                 try {
                     if (gestorFichero.addPalabra(s)) {
@@ -247,7 +247,7 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
             }
         } else {
             this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
-            this.estadoInsertarjLabel.setText("La palabra debe tener " + TAMANO_PALABRA + " letras.");
+            this.estadoInsertarjLabel.setText("La palabra debe tener " + MainJFrame.TAMANO_PALABRA + " letras.");
         }
     }
 
@@ -255,7 +255,7 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
         String s = this.borrarjTextField.getText().toLowerCase();
         this.estadoInsertarjLabel.setText("");
         this.borrarjTextField.setText("");
-        if (s.length() == TAMANO_PALABRA) {
+        if (s.length() == MainJFrame.TAMANO_PALABRA) {
             try {
                 if (gestorFichero.removePalabra(s)) {
                     this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
@@ -269,7 +269,7 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
             }
         } else {
             this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
-            this.estadoBorrarjLabel.setText("La palabra debe tener " + TAMANO_PALABRA + " letras.");
+            this.estadoBorrarjLabel.setText("La palabra debe tener " + MainJFrame.TAMANO_PALABRA + " letras.");
         }
 
     }

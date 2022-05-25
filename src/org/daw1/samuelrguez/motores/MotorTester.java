@@ -12,7 +12,7 @@ import java.sql.SQLException;
  *
  * @author 34609
  */
-public class MotorTester implements IMotor{
+public class MotorTester implements IMotor {
 
     @Override
     public boolean isPalabraInDiccionario(String s) {
@@ -21,7 +21,7 @@ public class MotorTester implements IMotor{
 
     @Override
     public String getPalabraAleatoria() {
-        return "CICLO";
+        return "ciclo";
     }
 
     @Override
@@ -46,5 +46,5 @@ public class MotorTester implements IMotor{
     public boolean removePalabra(String s) throws SQLException {
         return true;
     }
-    
+
 }

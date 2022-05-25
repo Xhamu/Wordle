@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * @author alumno
  */
 public interface IMotor {
-    
+   
     public boolean isPalabraInDiccionario(String s);
     public String getPalabraAleatoria() throws SQLException;
     public int checkChar(int pos, String random, String insertada);
