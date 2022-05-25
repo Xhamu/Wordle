@@ -90,7 +90,7 @@ public class MotorFichero implements IMotor {
 
     private boolean checkPalabra(String s) {
         s = s.toLowerCase().trim();
-        return !s.matches("[^a-z]{5}");
+        return s.matches("[a-z]{5}");
     }
 
     @Override

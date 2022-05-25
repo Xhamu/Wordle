@@ -156,6 +156,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         archivojMenu = new javax.swing.JMenu();
         nuevaPartidajCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
+        salirjCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         motoresjMenu = new javax.swing.JMenu();
         testjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         filejRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
@@ -442,6 +443,15 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         archivojMenu.add(nuevaPartidajCheckBoxMenuItem);
 
+        salirjCheckBoxMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        salirjCheckBoxMenuItem.setText("Salir");
+        salirjCheckBoxMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salirjCheckBoxMenuItemActionPerformed(evt);
+            }
+        });
+        archivojMenu.add(salirjCheckBoxMenuItem);
+
         jMenuBar1.add(archivojMenu);
 
         motoresjMenu.setText("Motores");
@@ -554,6 +564,12 @@ public class MainJFrame extends javax.swing.JFrame {
         GestionMotorJDialog gestionMotor = new GestionMotorJDialog(this, true, gestorFichero);
         gestionMotor.setVisible(true);
     }//GEN-LAST:event_gestionMotorjMenuItemActionPerformed
+
+    private void salirjCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirjCheckBoxMenuItemActionPerformed
+        if (this.salirjCheckBoxMenuItem.isSelected()) {
+            System.exit(-1);
+        }
+    }//GEN-LAST:event_salirjCheckBoxMenuItemActionPerformed
 
     private void selectMotor() {
         if (this.testjRadioButtonMenuItem.isSelected()) {
@@ -758,6 +774,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenu motoresjMenu;
     private javax.swing.JCheckBoxMenuItem nuevaPartidajCheckBoxMenuItem;
     private javax.swing.JTextField palabrajTextField;
+    private javax.swing.JCheckBoxMenuItem salirjCheckBoxMenuItem;
     private javax.swing.JRadioButtonMenuItem testjRadioButtonMenuItem;
     // End of variables declaration//GEN-END:variables
 }
