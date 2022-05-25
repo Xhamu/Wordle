@@ -145,7 +145,7 @@ public class GestionMotorJDialog extends javax.swing.JDialog {
         titulojPanel.setLayout(new java.awt.GridBagLayout());
 
         titulojLabel.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
-        titulojLabel.setForeground(new java.awt.Color(102, 102, 102));
+        titulojLabel.setForeground(new java.awt.Color(51, 51, 51));
         titulojLabel.setText("Gestión motor");
         titulojPanel.add(titulojLabel, new java.awt.GridBagConstraints());
 

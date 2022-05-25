@@ -21,15 +21,15 @@ import org.daw1.samuelrguez.motores.*;
  * @author alumno
  */
 public class MainJFrame extends javax.swing.JFrame {
-    
+
     private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204, 0, 0);
     private static final java.awt.Color COLOR_AMARILLO = new java.awt.Color(204, 153, 0);
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51, 102, 0);
-    
+
     private static final java.util.Set<String> letrasVerdes = new java.util.TreeSet<>();
     private static final java.util.Set<String> letrasAmarillas = new java.util.TreeSet<>();
     private static final java.util.Set<String> letrasRojas = new java.util.TreeSet<>();
-    
+
     private static final int MAX_INTENTOS = 6;
     protected static final int TAMANO_PALABRA = 5;
     private static final String TEXTOVACIO = "";
@@ -37,8 +37,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private String palabraRandom;
     private final JLabel[][] matriz = new JLabel[MAX_INTENTOS][TAMANO_PALABRA];
     private static IMotor gestorFichero;
-    private static File FICHERO = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
-    private static File FILE_TEST = new File(Path.of(".") + File.separator + "data" + File.separator + "palabras.txt");
+    private static File FICHERO = new File(Path.of(".") + File.separator + "data" + File.separator + "diccionario.txt");
+    private static File FILE_TEST = new File(Path.of(".") + File.separator + "data" + File.separator + "diccionario.txt");
 
     /**
      * Creates new form InterfazWordle
@@ -47,7 +47,7 @@ public class MainJFrame extends javax.swing.JFrame {
         initComponents();
         ponerLabelsEnMatriz();
         setInvisibleLabels();
-        gestorFichero = new MotorFichero(FICHERO);
+        gestorFichero = new MotorTester();
         MAXIMO_INTENTOS_PARTIDA = 0;
         try {
             palabraRandom = gestorFichero.getPalabraAleatoria();
@@ -55,7 +55,7 @@ public class MainJFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "ERROR: " + ex.getMessage());
         }
     }
-    
+
     public void setLetraColor(int fila, int pos, Color c, String letra) {
         JLabel[] filaDeLabels = matriz[fila];
         JLabel jLabel = filaDeLabels[pos];
@@ -63,28 +63,24 @@ public class MainJFrame extends javax.swing.JFrame {
         jLabel.setText(letra);
         jLabel.setVisible(true);
     }
-    
+
     private void setInvisibleLabels() {
-        for (int i = 0; i < matriz.length; i++) {
-            JLabel[] filaDeLabels = matriz[i];
-            for (int j = 0; j < filaDeLabels.length; j++) {
-                JLabel label = filaDeLabels[j];
+        for (JLabel[] filaDeLabels : matriz) {
+            for (JLabel label : filaDeLabels) {
                 label.setVisible(false);
             }
         }
     }
-    
+
     private void setLabelsBlank() {
-        for (int i = 0; i < matriz.length; i++) {
-            JLabel[] filaDeLabels = matriz[i];
-            for (int j = 0; j < filaDeLabels.length; j++) {
-                JLabel label = filaDeLabels[j];
-                label.setVisible(false);
+        for (JLabel[] filaDeLabels : matriz) {
+            for (JLabel label : filaDeLabels) {
                 label.setText(TEXTOVACIO);
+                label.setVisible(false);
             }
         }
     }
-    
+
     public final void ponerLabelsEnMatriz() {
         for (int i = 1; i <= MAX_INTENTOS; i++) {
             for (int j = 1; j <= TAMANO_PALABRA; j++) {
@@ -348,6 +344,7 @@ public class MainJFrame extends javax.swing.JFrame {
         maljLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         maljLabel.setForeground(new java.awt.Color(204, 0, 0));
         maljLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        maljLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         maljPanel.add(maljLabel);
 
         estadojPanel.add(maljPanel);
@@ -357,6 +354,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         existenjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         existenjLabel.setForeground(new java.awt.Color(204, 153, 0));
+        existenjLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         existenjPanel.add(existenjLabel);
 
         estadojPanel.add(existenjPanel);
@@ -366,6 +364,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         bienjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         bienjLabel.setForeground(new java.awt.Color(51, 102, 0));
+        bienjLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bienjPanel.add(bienjLabel);
 
         estadojPanel.add(bienjPanel);
@@ -375,6 +374,7 @@ public class MainJFrame extends javax.swing.JFrame {
         inputjPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         palabrajTextField.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        palabrajTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         palabrajTextField.setPreferredSize(new java.awt.Dimension(120, 22));
         palabrajTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -448,8 +448,8 @@ public class MainJFrame extends javax.swing.JFrame {
         motoresjMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
 
         testjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        testjRadioButtonMenuItem.setSelected(true);
         testjRadioButtonMenuItem.setText("Motor de test");
-        testjRadioButtonMenuItem.setEnabled(false);
         testjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 testjRadioButtonMenuItemActionPerformed(evt);
@@ -458,7 +458,6 @@ public class MainJFrame extends javax.swing.JFrame {
         motoresjMenu.add(testjRadioButtonMenuItem);
 
         filejRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        filejRadioButtonMenuItem.setSelected(true);
         filejRadioButtonMenuItem.setText("Motor de fichero");
         filejRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -535,25 +534,16 @@ public class MainJFrame extends javax.swing.JFrame {
     private void filejRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filejRadioButtonMenuItemActionPerformed
         selectMotor();
         setNuevaPartida();
-        this.filejRadioButtonMenuItem.setSelected(true);
-        this.esBBDDjRadioButtonMenuItem.setSelected(false);
-        this.glBBDDjRadioButtonMenuItem.setSelected(false);
     }//GEN-LAST:event_filejRadioButtonMenuItemActionPerformed
 
     private void esBBDDjRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_esBBDDjRadioButtonMenuItemActionPerformed
         selectMotor();
         setNuevaPartida();
-        this.esBBDDjRadioButtonMenuItem.setSelected(true);
-        this.filejRadioButtonMenuItem.setSelected(false);
-        this.glBBDDjRadioButtonMenuItem.setSelected(false);
     }//GEN-LAST:event_esBBDDjRadioButtonMenuItemActionPerformed
 
     private void glBBDDjRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_glBBDDjRadioButtonMenuItemActionPerformed
         selectMotor();
         setNuevaPartida();
-        this.glBBDDjRadioButtonMenuItem.setSelected(true);
-        this.filejRadioButtonMenuItem.setSelected(false);
-        this.esBBDDjRadioButtonMenuItem.setSelected(false);
     }//GEN-LAST:event_glBBDDjRadioButtonMenuItemActionPerformed
 
     private void nuevaPartidajCheckBoxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaPartidajCheckBoxMenuItemActionPerformed
@@ -564,26 +554,20 @@ public class MainJFrame extends javax.swing.JFrame {
         GestionMotorJDialog gestionMotor = new GestionMotorJDialog(this, true, gestorFichero);
         gestionMotor.setVisible(true);
     }//GEN-LAST:event_gestionMotorjMenuItemActionPerformed
-    
+
     private void selectMotor() {
-        if (this.filejRadioButtonMenuItem.isSelected()) {
+        if (this.testjRadioButtonMenuItem.isSelected()) {
             gestorFichero = new MotorTester();
         } else if (this.filejRadioButtonMenuItem.isSelected()) {
             FICHERO = FILE_TEST;
             gestorFichero = new MotorFichero(FICHERO);
-            this.esBBDDjRadioButtonMenuItem.setSelected(false);
-            this.glBBDDjRadioButtonMenuItem.setSelected(false);
         } else if (this.esBBDDjRadioButtonMenuItem.isSelected()) {
             gestorFichero = new MotorBBDD("es");
-            this.filejRadioButtonMenuItem.setSelected(false);
-            this.glBBDDjRadioButtonMenuItem.setSelected(false);
         } else if (this.glBBDDjRadioButtonMenuItem.isSelected()) {
             gestorFichero = new MotorBBDD("gl");
-            this.filejRadioButtonMenuItem.setSelected(false);
-            this.esBBDDjRadioButtonMenuItem.setSelected(false);
         }
     }
-    
+
     private void setNuevaPartida() {
         setLabelsBlank();
         MAXIMO_INTENTOS_PARTIDA = 0;
@@ -594,18 +578,14 @@ public class MainJFrame extends javax.swing.JFrame {
         }
         this.palabrajTextField.setEnabled(true);
         this.finaljLabel.setText(TEXTOVACIO);
-        this.bienjLabel.setText(TEXTOVACIO);
         letrasVerdes.clear();
-        this.existenjLabel.setText(TEXTOVACIO);
+        this.bienjLabel.setText(TEXTOVACIO);
         letrasAmarillas.clear();
-        this.maljLabel.setText(TEXTOVACIO);
+        this.existenjLabel.setText(TEXTOVACIO);
         letrasRojas.clear();
-        
-        if (this.nuevaPartidajCheckBoxMenuItem.isSelected()) {
-            this.nuevaPartidajCheckBoxMenuItem.setSelected(false);
-        }
+        this.maljLabel.setText(TEXTOVACIO);
     }
-    
+
     private void enviarletrasComprobarYColorear() {
         int contadorAcertadas = 0;
         Color ponerColorPalabra;
@@ -618,29 +598,33 @@ public class MainJFrame extends javax.swing.JFrame {
                 String rojo;
                 String amarillo;
                 String verde;
-                if (insertColor == 1) {
-                    ponerColorPalabra = COLOR_VERDE;
-                    contadorAcertadas++;
-                    letrasVerdes.add(insertLetra);
-                    if (letrasAmarillas.contains(insertLetra)) {
-                        letrasAmarillas.remove(insertLetra);
+                switch (insertColor) {
+                    case 1:
+                        ponerColorPalabra = COLOR_VERDE;
+                        contadorAcertadas++;
+                        letrasVerdes.add(insertLetra);
+                        if (letrasAmarillas.contains(insertLetra)) {
+                            letrasAmarillas.remove(insertLetra);
+                            amarillo = cleanLlavesSet(letrasAmarillas.toString());
+                            this.existenjLabel.setText(amarillo);
+                        }
+                        verde = cleanLlavesSet(letrasVerdes.toString());
+                        this.bienjLabel.setText(verde);
+                        break;
+                    case 0:
+                        ponerColorPalabra = COLOR_AMARILLO;
+                        if (!letrasVerdes.contains(insertLetra)) {
+                            letrasAmarillas.add(insertLetra);
+                        }
                         amarillo = cleanLlavesSet(letrasAmarillas.toString());
                         this.existenjLabel.setText(amarillo);
-                    }
-                    verde = cleanLlavesSet(letrasVerdes.toString());
-                    this.bienjLabel.setText(verde);
-                } else if (insertColor == 0) {
-                    ponerColorPalabra = COLOR_AMARILLO;
-                    if (!letrasVerdes.contains(insertLetra)) {
-                        letrasAmarillas.add(insertLetra);
-                    }
-                    amarillo = cleanLlavesSet(letrasAmarillas.toString());
-                    this.existenjLabel.setText(amarillo);
-                } else {
-                    ponerColorPalabra = COLOR_ROJO;
-                    letrasRojas.add(insertLetra);
-                    rojo = cleanLlavesSet(letrasRojas.toString());
-                    this.maljLabel.setText(rojo);
+                        break;
+                    default:
+                        ponerColorPalabra = COLOR_ROJO;
+                        letrasRojas.add(insertLetra);
+                        rojo = cleanLlavesSet(letrasRojas.toString());
+                        this.maljLabel.setText(rojo);
+                        break;
                 }
                 setLetraColor(MAXIMO_INTENTOS_PARTIDA, i, ponerColorPalabra, insertLetra);
             }
@@ -648,7 +632,7 @@ public class MainJFrame extends javax.swing.JFrame {
             if (contadorAcertadas == TAMANO_PALABRA) {
                 this.palabrajTextField.setEnabled(false);
                 this.finaljLabel.setForeground(COLOR_VERDE);
-                this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en \n" + MAXIMO_INTENTOS_PARTIDA + " intentos");
+                this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en " + MAXIMO_INTENTOS_PARTIDA + " intentos");
             } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
                 this.palabrajTextField.setEnabled(false);
                 this.finaljLabel.setForeground(COLOR_ROJO);
@@ -658,21 +642,21 @@ public class MainJFrame extends javax.swing.JFrame {
             setErrorTrue();
         }
     }
-    
+
     public void setErrorFalse() {
         this.errorjPanel.setVisible(false);
         this.errorjLabel.setVisible(false);
         this.errorjLabel.setText(TEXTOVACIO);
         this.palabrajTextField.setText(TEXTOVACIO);
     }
-    
+
     public void setErrorTrue() {
         this.errorjPanel.setVisible(true);
         this.errorjLabel.setVisible(true);
-        this.errorjLabel.setText("No se admiten palabras con longitud diferente a 5 letras.");
+        this.errorjLabel.setText("Las palabras deben estar formadas por 5 letras.");
         this.palabrajTextField.setText(TEXTOVACIO);
     }
-    
+
     public String cleanLlavesSet(String s) {
         StringBuilder sb = new StringBuilder(s);
         sb = sb.delete(0, 1);

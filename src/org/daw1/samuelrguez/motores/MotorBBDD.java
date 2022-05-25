@@ -97,7 +97,6 @@ public class MotorBBDD implements IMotor {
             ps.setString(1, s.toUpperCase().trim());
             int borradas = ps.executeUpdate();
             return borradas > 0;
-
         }
     }
 

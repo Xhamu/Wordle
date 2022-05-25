@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Random;
 
 /**
  *
@@ -32,6 +33,10 @@ public class MotorFichero implements IMotor {
     public MotorFichero(File f) {
         FICHERO = f;
         setPalabrasFicheroEnDiccionario();
+    }
+
+    private boolean existsFile() {
+        return FICHERO.exists();
     }
 
     private boolean setPalabrasFicheroEnDiccionario() {
@@ -51,7 +56,7 @@ public class MotorFichero implements IMotor {
     }
 
     private boolean setPalabraDiccionarioEnFichero() {
-        if (!FICHERO.exists()) {
+        if (!existsFile()) {
             crearFile();
         }
         try (Writer wr = new BufferedWriter(new FileWriter(FICHERO))) {
@@ -61,10 +66,8 @@ public class MotorFichero implements IMotor {
         }
         try (Writer wr = new BufferedWriter(new FileWriter(FICHERO, true))) {
             StringBuilder sb = new StringBuilder();
-            Iterator it = diccionario.iterator();
-            while (it.hasNext()) {
-                String aux = (String) it.next();
-                sb.append(aux).append("\n");
+            for (String s : diccionario) {
+                sb.append(s).append("\n");
             }
             wr.write(sb.toString());
             return true;
@@ -72,10 +75,6 @@ public class MotorFichero implements IMotor {
             System.out.println("ERROR: " + ex.getMessage());
         }
         return false;
-    }
-
-    private boolean existsFile() {
-        return FICHERO.exists();
     }
 
     private void crearFile() {
@@ -96,20 +95,21 @@ public class MotorFichero implements IMotor {
 
     @Override
     public boolean isPalabraInDiccionario(String s) {
+        setPalabrasFicheroEnDiccionario();
         s = s.toLowerCase().trim();
         return diccionario.contains(s.toUpperCase());
     }
 
     @Override
     public String getPalabraAleatoria() throws SQLException {
-        if (!FICHERO.exists()) {
+        if (!existsFile()) {
             crearFile();
         }
         String random = "";
-        java.util.Random numeroRandom = new java.util.Random();
-        Iterator it = diccionario.iterator();
-        int numeroRandomPalabra = numeroRandom.nextInt(diccionario.size());
         int cont = 0;
+        Random numeroRandom = new Random();
+        int numeroRandomPalabra = numeroRandom.nextInt(diccionario.size());
+        Iterator it = diccionario.iterator();
         while (cont <= numeroRandomPalabra) {
             random = (String) it.next();
             cont++;
@@ -134,18 +134,15 @@ public class MotorFichero implements IMotor {
 
     @Override
     public boolean addPalabra(String s) throws IOException {
-        if (!existsFile()) {
-            crearFile();
-        }
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(FICHERO, true))) {
-            if (!isPalabraInDiccionario(s)) {
-                w.append(s.toLowerCase() + "\n");
-                return true;
-            } else {
-                return false;
+        s = s.toLowerCase().trim();
+        if (checkPalabra(s)) {
+            if (!existsFile()) {
+                crearFile();
             }
-        } catch (IOException ex) {
-            Logger.getLogger(MotorFichero.class.getName()).log(Level.SEVERE, null, ex);
+            try (Writer wr = new BufferedWriter(new FileWriter(FICHERO, true))) {
+                wr.write(s + "\n");
+                return true;
+            }
         }
         return false;
     }
@@ -154,9 +151,10 @@ public class MotorFichero implements IMotor {
     public boolean removePalabra(String s) throws SQLException {
         s = s.toLowerCase().trim();
         if (checkPalabra(s)) {
-            if (!FICHERO.exists()) {
+            if (!existsFile()) {
                 crearFile();
             }
+            setPalabrasFicheroEnDiccionario();
             if (diccionario.contains(s)) {
                 if (diccionario.remove(s)) {
                     setPalabraDiccionarioEnFichero();

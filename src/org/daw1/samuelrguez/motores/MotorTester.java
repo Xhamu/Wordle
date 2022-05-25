@@ -26,9 +26,11 @@ public class MotorTester implements IMotor {
 
     @Override
     public int checkChar(int pos, String random, String insertada) {
+        random = random.toLowerCase().trim();
+        insertada = insertada.toLowerCase().trim();
         char l = insertada.charAt(pos);
         if (random.contains(l + "")) {
-            if (insertada.charAt(pos) == l) {
+            if (random.charAt(pos) == l) {
                 return 1;
             }
             return 0;
