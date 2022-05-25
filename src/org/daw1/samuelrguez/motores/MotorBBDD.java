@@ -31,9 +31,9 @@ public class MotorBBDD implements IMotor {
 
     private void setPalabrasFicheroEnDiccionario() {
         try (Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement consulta = conn.prepareStatement("SELECT palabra FROM palabras WHERE lang = ?")) {
-            consulta.setString(1, lang);
-            try (ResultSet rs = consulta.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement("SELECT palabra FROM palabras WHERE lang = ?")) {
+            ps.setString(1, lang);
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String s = rs.getString("palabra");
                     diccionario.add(s);
@@ -54,10 +54,10 @@ public class MotorBBDD implements IMotor {
     @Override
     public String getPalabraAleatoria() throws SQLException {
         try (Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement statement = conn.prepareStatement("SELECT palabra FROM palabras WHERE lang = ? ORDER BY RANDOM() LIMIT 1")) {
-            statement.setString(1, lang);
+                PreparedStatement ps = conn.prepareStatement("SELECT palabra FROM palabras WHERE lang = ? ORDER BY RANDOM() LIMIT 1")) {
+            ps.setString(1, lang);
             String random;
-            try (ResultSet rs = statement.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 random = rs.getString("palabra");
                 return random;
             }
@@ -82,10 +82,10 @@ public class MotorBBDD implements IMotor {
     @Override
     public boolean addPalabra(String s) throws IOException, SQLException {
         try (Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement statement = conn.prepareStatement("INSERT INTO palabras (palabra,lang) VALUES(?,?)")) {
-            statement.setString(1, s.toUpperCase().trim());
-            statement.setString(2, lang);
-            int insertadas = statement.executeUpdate();
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO palabras (palabra, lang) VALUES(?, ?)")) {
+            ps.setString(1, s.toUpperCase().trim());
+            ps.setString(2, lang);
+            int insertadas = ps.executeUpdate();
             return insertadas > 0;
         }
     }
@@ -93,9 +93,9 @@ public class MotorBBDD implements IMotor {
     @Override
     public boolean removePalabra(String s) throws SQLException {
         try (Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement statement = conn.prepareStatement("DELETE FROM palabras WHERE palabra=?")) {
-            statement.setString(1, s.toUpperCase().trim());
-            int borradas = statement.executeUpdate();
+                PreparedStatement ps = conn.prepareStatement("DELETE FROM palabras WHERE palabra = ?")) {
+            ps.setString(1, s.toUpperCase().trim());
+            int borradas = ps.executeUpdate();
             return borradas > 0;
 
         }

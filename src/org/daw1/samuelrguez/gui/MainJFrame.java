@@ -158,6 +158,7 @@ public class MainJFrame extends javax.swing.JFrame {
         errorjLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivojMenu = new javax.swing.JMenu();
+        nuevaPartidajCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
         motoresjMenu = new javax.swing.JMenu();
         testjRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         filejRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
@@ -369,6 +370,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         inputjPanel.setBackground(new java.awt.Color(255, 255, 255));
 
+        palabrajTextField.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         palabrajTextField.setPreferredSize(new java.awt.Dimension(120, 22));
         palabrajTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -377,6 +379,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         inputjPanel.add(palabrajTextField);
 
+        enviarjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         enviarjButton.setText("Enviar");
         enviarjButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -404,6 +407,7 @@ public class MainJFrame extends javax.swing.JFrame {
         errorjPanel.setBackground(new java.awt.Color(255, 255, 255));
         errorjPanel.setLayout(new java.awt.GridBagLayout());
 
+        errorjLabel.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         errorjLabel.setForeground(new java.awt.Color(204, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -419,6 +423,11 @@ public class MainJFrame extends javax.swing.JFrame {
         archivojMenu.setText("Archivo");
         archivojMenu.setFocusable(false);
         archivojMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+
+        nuevaPartidajCheckBoxMenuItem.setSelected(true);
+        nuevaPartidajCheckBoxMenuItem.setText("Nueva partida");
+        archivojMenu.add(nuevaPartidajCheckBoxMenuItem);
+
         jMenuBar1.add(archivojMenu);
 
         motoresjMenu.setText("Motores");
@@ -438,11 +447,11 @@ public class MainJFrame extends javax.swing.JFrame {
         motoresjMenu.add(filejRadioButtonMenuItem);
 
         esBBDDjRadioButtonMenuItem.setSelected(true);
-        esBBDDjRadioButtonMenuItem.setText("Motor de BBDD ES");
+        esBBDDjRadioButtonMenuItem.setText("Motor de BBDD (Español)");
         motoresjMenu.add(esBBDDjRadioButtonMenuItem);
 
         glBBDDjRadioButtonMenuItem.setSelected(true);
-        glBBDDjRadioButtonMenuItem.setText("Motor de BBDD GL");
+        glBBDDjRadioButtonMenuItem.setText("Motor de BBDD (Gallego)");
         motoresjMenu.add(glBBDDjRadioButtonMenuItem);
 
         jMenuBar1.add(motoresjMenu);
@@ -651,6 +660,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel maljLabel;
     private javax.swing.JPanel maljPanel;
     private javax.swing.JMenu motoresjMenu;
+    private javax.swing.JCheckBoxMenuItem nuevaPartidajCheckBoxMenuItem;
     private javax.swing.JTextField palabrajTextField;
     private javax.swing.JRadioButtonMenuItem testjRadioButtonMenuItem;
     // End of variables declaration//GEN-END:variables

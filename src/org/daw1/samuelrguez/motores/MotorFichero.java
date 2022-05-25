@@ -62,18 +62,12 @@ public class MotorFichero implements IMotor {
         try (Writer wr = new BufferedWriter(new FileWriter(FICHERO, true))) {
             StringBuilder sb = new StringBuilder();
             Iterator it = diccionario.iterator();
-
             while (it.hasNext()) {
-
                 String aux = (String) it.next();
-
                 sb.append(aux).append("\n");
             }
-
             wr.write(sb.toString());
-
             return true;
-
         } catch (IOException ex) {
             System.out.println("ERROR: " + ex.getMessage());
         }
