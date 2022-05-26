@@ -48,7 +48,7 @@ public class MotorBBDD implements IMotor {
     public boolean isPalabraInDiccionario(String s) {
         setPalabrasFicheroEnDiccionario();
         s = s.toUpperCase().trim();
-        return diccionario.contains(s);
+        return diccionario.contains(s.toUpperCase());
     }
 
     @Override

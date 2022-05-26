@@ -97,7 +97,7 @@ public class MotorFichero implements IMotor {
     public boolean isPalabraInDiccionario(String s) {
         setPalabrasFicheroEnDiccionario();
         s = s.toLowerCase().trim();
-        return diccionario.contains(s.toUpperCase());
+        return diccionario.contains(s.toLowerCase());
     }
 
     @Override

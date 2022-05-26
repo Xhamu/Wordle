@@ -606,64 +606,64 @@ public class MainJFrame extends javax.swing.JFrame {
         int contadorAcertadas = 0;
         Color ponerColorPalabra;
         String s = this.palabrajTextField.getText().toLowerCase();
-        if (s.length() == TAMANO_PALABRA) {
-            setErrorFalse();
-            for (int i = 0; i < TAMANO_PALABRA; i++) {
-                int insertColor = gestorFichero.checkChar(i, palabraRandom, s);
-                String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
-                String rojo;
-                String amarillo;
-                String verde;
-                switch (insertColor) {
-                    case 1:
-                        ponerColorPalabra = COLOR_VERDE;
-                        contadorAcertadas++;
-                        letrasVerdes.add(insertLetra);
-                        if (letrasAmarillas.contains(insertLetra)) {
-                            letrasAmarillas.remove(insertLetra);
+        if (!gestorFichero.isPalabraInDiccionario(s)) {
+            this.errorjLabel.setForeground(COLOR_ROJO);
+            this.errorjLabel.setText("La palabra no existe en el diccionario.");
+            this.palabrajTextField.setText(TEXTOVACIO);
+        } else {
+            if (s.length() == TAMANO_PALABRA) {
+                this.errorjLabel.setText(TEXTOVACIO);
+                this.palabrajTextField.setText(TEXTOVACIO);
+                for (int i = 0; i < TAMANO_PALABRA; i++) {
+                    int insertColor = gestorFichero.checkChar(i, palabraRandom, s);
+                    String insertLetra = s.substring(0 + i, 1 + i).toUpperCase();
+                    String rojo;
+                    String amarillo;
+                    String verde;
+                    switch (insertColor) {
+                        case 1:
+                            ponerColorPalabra = COLOR_VERDE;
+                            contadorAcertadas++;
+                            letrasVerdes.add(insertLetra);
+                            if (letrasAmarillas.contains(insertLetra)) {
+                                letrasAmarillas.remove(insertLetra);
+                                amarillo = cleanLlavesSet(letrasAmarillas.toString());
+                                this.existenjLabel.setText(amarillo);
+                            }
+                            verde = cleanLlavesSet(letrasVerdes.toString());
+                            this.bienjLabel.setText(verde);
+                            break;
+                        case 0:
+                            ponerColorPalabra = COLOR_AMARILLO;
+                            if (!letrasVerdes.contains(insertLetra)) {
+                                letrasAmarillas.add(insertLetra);
+                            }
                             amarillo = cleanLlavesSet(letrasAmarillas.toString());
                             this.existenjLabel.setText(amarillo);
-                        }
-                        verde = cleanLlavesSet(letrasVerdes.toString());
-                        this.bienjLabel.setText(verde);
-                        break;
-                    case 0:
-                        ponerColorPalabra = COLOR_AMARILLO;
-                        if (!letrasVerdes.contains(insertLetra)) {
-                            letrasAmarillas.add(insertLetra);
-                        }
-                        amarillo = cleanLlavesSet(letrasAmarillas.toString());
-                        this.existenjLabel.setText(amarillo);
-                        break;
-                    default:
-                        ponerColorPalabra = COLOR_ROJO;
-                        letrasRojas.add(insertLetra);
-                        rojo = cleanLlavesSet(letrasRojas.toString());
-                        this.maljLabel.setText(rojo);
-                        break;
+                            break;
+                        default:
+                            ponerColorPalabra = COLOR_ROJO;
+                            letrasRojas.add(insertLetra);
+                            rojo = cleanLlavesSet(letrasRojas.toString());
+                            this.maljLabel.setText(rojo);
+                            break;
+                    }
+                    setLetraColor(MAXIMO_INTENTOS_PARTIDA, i, ponerColorPalabra, insertLetra);
                 }
-                setLetraColor(MAXIMO_INTENTOS_PARTIDA, i, ponerColorPalabra, insertLetra);
+                MAXIMO_INTENTOS_PARTIDA++;
+                if (contadorAcertadas == TAMANO_PALABRA) {
+                    this.palabrajTextField.setEnabled(false);
+                    this.finaljLabel.setForeground(COLOR_VERDE);
+                    this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en " + MAXIMO_INTENTOS_PARTIDA + " intentos");
+                } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
+                    this.palabrajTextField.setEnabled(false);
+                    this.finaljLabel.setForeground(COLOR_ROJO);
+                    this.finaljLabel.setText("No has acertado la palabra: " + palabraRandom.toUpperCase());
+                }
+            } else {
+                setErrorTrue();
             }
-            MAXIMO_INTENTOS_PARTIDA++;
-            if (contadorAcertadas == TAMANO_PALABRA) {
-                this.palabrajTextField.setEnabled(false);
-                this.finaljLabel.setForeground(COLOR_VERDE);
-                this.finaljLabel.setText("Has adivinado la palabra: " + palabraRandom.toUpperCase() + " en " + MAXIMO_INTENTOS_PARTIDA + " intentos");
-            } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
-                this.palabrajTextField.setEnabled(false);
-                this.finaljLabel.setForeground(COLOR_ROJO);
-                this.finaljLabel.setText("No has acertado la palabra: " + palabraRandom.toUpperCase());
-            }
-        } else {
-            setErrorTrue();
         }
-    }
-
-    public void setErrorFalse() {
-        this.errorjPanel.setVisible(false);
-        this.errorjLabel.setVisible(false);
-        this.errorjLabel.setText(TEXTOVACIO);
-        this.palabrajTextField.setText(TEXTOVACIO);
     }
 
     public void setErrorTrue() {
