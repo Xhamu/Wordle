@@ -106,6 +106,7 @@ public class MainJFrame extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel2 = new javax.swing.JLabel();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         mainjPanel = new javax.swing.JPanel();
         letrasjPanel = new javax.swing.JPanel();
         jLabel1_1 = new javax.swing.JLabel();
@@ -457,6 +458,7 @@ public class MainJFrame extends javax.swing.JFrame {
         motoresjMenu.setText("Motores");
         motoresjMenu.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
 
+        buttonGroup1.add(testjRadioButtonMenuItem);
         testjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         testjRadioButtonMenuItem.setSelected(true);
         testjRadioButtonMenuItem.setText("Motor de test");
@@ -467,6 +469,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         motoresjMenu.add(testjRadioButtonMenuItem);
 
+        buttonGroup1.add(filejRadioButtonMenuItem);
         filejRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         filejRadioButtonMenuItem.setText("Motor de fichero");
         filejRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -476,6 +479,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         motoresjMenu.add(filejRadioButtonMenuItem);
 
+        buttonGroup1.add(esBBDDjRadioButtonMenuItem);
         esBBDDjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         esBBDDjRadioButtonMenuItem.setText("Motor de BBDD (Español)");
         esBBDDjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -485,6 +489,7 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         motoresjMenu.add(esBBDDjRadioButtonMenuItem);
 
+        buttonGroup1.add(glBBDDjRadioButtonMenuItem);
         glBBDDjRadioButtonMenuItem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         glBBDDjRadioButtonMenuItem.setText("Motor de BBDD (Gallego)");
         glBBDDjRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -721,6 +726,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel bienjLabel;
     private javax.swing.JPanel bienjPanel;
     private javax.swing.JPanel bottomjPanel1;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton enviarjButton;
     private javax.swing.JLabel errorjLabel;
     private javax.swing.JPanel errorjPanel;
