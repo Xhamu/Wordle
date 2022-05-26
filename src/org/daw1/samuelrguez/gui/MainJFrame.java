@@ -658,7 +658,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 } else if (MAXIMO_INTENTOS_PARTIDA == 6) {
                     this.palabrajTextField.setEnabled(false);
                     this.finaljLabel.setForeground(COLOR_ROJO);
-                    this.finaljLabel.setText("No has acertado la palabra: " + palabraRandom.toUpperCase());
+                    this.finaljLabel.setText("No has adivinado la palabra: " + palabraRandom.toUpperCase());
                 }
             } else {
                 setErrorTrue();
